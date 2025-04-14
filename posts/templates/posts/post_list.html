@@ -1,0 +1,63 @@
+{% extends 'posts/base.html' %}
+
+{% block title %}Blog Posts{% endblock %}
+
+{% block content %}
+<div class="post-container">
+    <div class="mb-4">
+        <h1 class="mb-0">Posts</h1>
+    </div>
+
+    {% for post in posts %}
+    <div class="post-card">
+        <div class="post-card-header">
+            <h2 class="card-title">{{ post.title }}</h2>
+            <div class="post-actions">
+                <a href="{% url 'post-update' post.id %}" title="Edit">
+                    <i class="fas fa-edit"></i>
+                </a>
+                <a href="#" data-bs-toggle="modal" data-bs-target="#deleteModal{{ post.id }}" title="Delete">
+                    <i class="fas fa-trash"></i>
+                </a>
+            </div>
+        </div>
+        
+        <p class="card-text">{{ post.content|truncatewords:30 }}</p>
+        
+        <div class="post-card-footer">
+            <div class="post-meta">
+                <span><i class="far fa-calendar"></i> {{ post.created_at|date:"l, F j" }}</span>
+                <span><i class="far fa-clock"></i> {{ post.created_at|date:"g:i A" }}</span>
+            </div>
+            <a href="{% url 'post-detail' post.id %}" class="btn-read-more">Continue reading</a>
+        </div>
+    </div>
+
+    <!-- Delete Modal -->
+    <div class="modal fade" id="deleteModal{{ post.id }}" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title">Delete Post</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete "{{ post.title }}"?
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form action="{% url 'post-delete' post.id %}" method="post" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="text-center">
+        <p class="lead text-muted">No posts yet. Start writing!</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %} 

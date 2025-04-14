@@ -1,0 +1,43 @@
+{% extends 'posts/base.html' %}
+
+{% block title %}{% if post %}Edit Post{% else %}New Post{% endif %}{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <div class="form-card">
+        <div class="mb-4">
+            <h1 class="h3 mb-1">{% if post %}Edit Post{% else %}Write a New Post{% endif %}</h1>
+            <p class="text-muted mb-0">Share your thoughts with the world</p>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-4">
+                <label for="{{ form.title.id_for_label }}" class="form-label">Title</label>
+                {{ form.title.errors }}
+                <input type="text" name="{{ form.title.name }}" id="{{ form.title.id_for_label }}" 
+                       class="form-control {% if form.title.errors %}is-invalid{% endif %}"
+                       value="{{ form.title.value|default:'' }}" 
+                       placeholder="Enter your post title"
+                       required>
+            </div>
+            <div class="mb-4">
+                <label for="{{ form.content.id_for_label }}" class="form-label">Content</label>
+                {{ form.content.errors }}
+                <textarea name="{{ form.content.name }}" id="{{ form.content.id_for_label }}" 
+                          class="form-control {% if form.content.errors %}is-invalid{% endif %}"
+                          placeholder="Write your post content here..."
+                          required>{{ form.content.value|default:'' }}</textarea>
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+                <a href="{% url 'post-list' %}" class="btn btn-outline-secondary">
+                    Cancel
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    {% if post %}Save changes{% else %}Publish post{% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %} 
